@@ -1,25 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import axios from "axios";
+import { Switch, Route } from "react-router-dom";
+import Admin from "./Admin.js";
 
 function App() {
+  const [game, setGame] = useState({});
+  const [isDisabled, setIsDisabled] = useState(false)
+  const getCard = () => {
+    axios
+      .get("http://localhost:8000/api/game")
+      .then(function(response) {
+        setGame(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      })
+      setIsDisabled(true)
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Switch>
+      <Route path="/mari">
+        <Admin />
+      </Route>
+      <Route path="/">
+        <button disabled={isDisabled} onClick={getCard}>Descubra quem você é</button>
+        <h1>Voce é um {game.youAre}</h1>
+      </Route>
+    </Switch>
   );
 }
 
